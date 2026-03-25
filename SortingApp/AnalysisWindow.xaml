@@ -1,0 +1,40 @@
+﻿<Window x:Class="SortingApp.AnalysisWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SortingApp"
+        mc:Ignorable="d"
+        Title="Сравнительный анализ методов сортировки" 
+        Height="500" 
+        Width="800"
+        WindowStartupLocation="CenterOwner">
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <TextBlock Grid.Row="0" Text="Сравнительный анализ" HorizontalAlignment="Center"/>
+
+        <WrapPanel Grid.Row="1" Margin="0,0,0,10" HorizontalAlignment="Center">
+            <Button x:Name="btnRunTest" Content="Запустить тестирование (10, 100, 150)" 
+                    Width="250" Height="30" Click="RunTest_Click" Margin="5"/>
+            <Button x:Name="btnClearResults" Content="Очистить результаты" 
+                    Width="120" Height="30" Click="btnClearResults_Click" Margin="5"/>
+        </WrapPanel>
+
+        <DataGrid Grid.Row="2" x:Name="dgResults" AutoGenerateColumns="False" 
+                  IsReadOnly="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Размер массива" Binding="{Binding Size}" Width="*"/>
+                <DataGridTextColumn Header="Метод сортировки" Binding="{Binding Method}" Width="2*"/>
+                <DataGridTextColumn Header="Сравнений" Binding="{Binding Comparisons}" Width="*"/>
+                <DataGridTextColumn Header="Перестановок" Binding="{Binding Permutations}" Width="*"/>
+                <DataGridTextColumn Header="Время (мс)" Binding="{Binding TimeMs}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Window>
