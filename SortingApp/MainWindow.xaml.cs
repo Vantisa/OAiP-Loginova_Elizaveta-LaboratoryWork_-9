@@ -25,16 +25,24 @@ namespace SortingApp
             InitializeComponent();
             Instance = this;
             _buffer = new StringBuilder();
+
+            sliderArraySize.ValueChanged += SliderArraySize_ValueChanged;
+        }
+
+        private void SliderArraySize_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            txtArraySizeValue.Text = ((int)sliderArraySize.Value).ToString();
         }
 
         private void btnGenerate_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                int size = int.Parse(txtArraySize.Text);
-                if (size <= 0 || size > 10000)
+                int size = (int)sliderArraySize.Value;
+
+                if (size <= 0 || size > 150)
                 {
-                    MessageBox.Show("Размер массива должен быть от 1 до 10000", "Ошибка",
+                    MessageBox.Show("Размер массива должен быть от 1 до 150", "Ошибка",
                         MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
@@ -55,19 +63,14 @@ namespace SortingApp
 
                 if (!_useDetailedOutput)
                 {
-                    txtStatus.Text = $"Сгенерирован массив из {size} элементов. (Детальный вывод отключен для ускорения)";
-                    AppendStep($"!!! ВНИМАНИЕ: Массив из {size} элементов !!!\n");
+                    AppendStep($"Массив из {size} элементов !!!\n");
                     AppendStep($"Детальный пошаговый вывод отключен для ускорения работы.\n");
                     AppendStep($"Будут показаны только основные этапы сортировки.\n\n");
                 }
-                else
-                {
-                    txtStatus.Text = $"Сгенерирован массив из {size} элементов";
-                }
             }
-            catch (FormatException)
+            catch (Exception ex)
             {
-                MessageBox.Show("Введите корректное число", "Ошибка",
+                MessageBox.Show($"Ошибка генерации массива: {ex.Message}", "Ошибка",
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -99,13 +102,8 @@ namespace SortingApp
 
                     if (!_useDetailedOutput)
                     {
-                        txtStatus.Text = $"Загружен массив из {_currentArray.Length} элементов. (Детальный вывод отключен)";
-                        AppendStep($"ВНИМАНИЕ: Массив из {_currentArray.Length} элементов !!!\n");
+                        AppendStep($"Массив из {_currentArray.Length} элементов !!!\n");
                         AppendStep($"Детальный пошаговый вывод отключен для ускорения работы.\n\n");
-                    }
-                    else
-                    {
-                        txtStatus.Text = $"Загружен массив из {_currentArray.Length} элементов из файла";
                     }
                 }
                 catch (Exception ex)
@@ -149,7 +147,6 @@ namespace SortingApp
                     content += textRange.Text;
 
                     File.WriteAllText(sfd.FileName, content);
-                    txtStatus.Text = $"Результат сохранен в файл: {sfd.FileName}";
                 }
                 catch (Exception ex)
                 {
@@ -167,7 +164,6 @@ namespace SortingApp
             txtSortedArray.Text = "";
             txtStatistics.Text = "";
             ClearStepByStep();
-            txtStatus.Text = "Готов";
             _useDetailedOutput = true;
         }
 
@@ -189,13 +185,11 @@ namespace SortingApp
             {
                 _context = new Context(new BubbleSort());
                 AppendStep("Выбран метод: Пузырьковая сортировка (Bubble Sort)\n");
-                AppendStep("=".PadRight(50, '=') + "\n");
             }
             else
             {
                 _context = new Context(new QuickSort());
                 AppendStep("Выбран метод: Быстрая сортировка (Quick Sort)\n");
-                AppendStep("=".PadRight(50, '=') + "\n");
             }
 
             Context.Array = (int[])_currentArray.Clone();
@@ -214,13 +208,10 @@ namespace SortingApp
                                  $"Перестановок: {SortingStats.Permutations}\n" +
                                  $"Время: {stopwatch.Elapsed.TotalMilliseconds:F2} мс";
 
-            AppendStep("\n" + "=".PadRight(50, '=') + "\n");
             AppendStep($"Сортировка завершена!\n");
             AppendStep($"Сравнений: {SortingStats.Comparisons}\n");
             AppendStep($"Перестановок: {SortingStats.Permutations}\n");
             AppendStep($"Время: {stopwatch.Elapsed.TotalMilliseconds:F2} мс\n");
-
-            txtStatus.Text = $"Сортировка завершена за {stopwatch.Elapsed.TotalMilliseconds:F2} мс";
         }
 
         private void DisplayOriginalArray()
@@ -278,8 +269,8 @@ namespace SortingApp
                     rtbStepByStep.ScrollToEnd();
                 });
             }
-
         }
+
         private void btnOpenAnalysis_Click(object sender, RoutedEventArgs e)
         {
             try

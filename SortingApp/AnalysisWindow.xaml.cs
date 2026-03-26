@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
+using System.Text;
 using System.Windows;
 
 namespace SortingApp
@@ -26,6 +28,11 @@ namespace SortingApp
                 _results.Clear();
                 int[] sizes = { 10, 100, 150 };
 
+                double totalSpeedRatio = 0;
+                double totalComparisonsRatio = 0;
+                double totalPermutationsRatio = 0;
+                int testCount = sizes.Length;
+
                 foreach (int size in sizes)
                 {
                     Random rand = new Random();
@@ -38,28 +45,56 @@ namespace SortingApp
                     Stopwatch sw = Stopwatch.StartNew();
                     new BubbleSort().Algorithm(bubbleArray);
                     sw.Stop();
-                    _results.Add(new TestResult
+
+                    var bubbleResult = new TestResult
                     {
                         Size = size,
                         Method = "Пузырьковая сортировка (Bubble Sort)",
                         Comparisons = SortingStats.Comparisons,
                         Permutations = SortingStats.Permutations,
                         TimeMs = sw.ElapsedMilliseconds
-                    });
+                    };
+                    _results.Add(bubbleResult);
 
                     int[] quickArray = (int[])originalArray.Clone();
                     SortingStats.Reset();
                     sw.Restart();
                     new QuickSort().Algorithm(quickArray);
                     sw.Stop();
-                    _results.Add(new TestResult
+
+                    var quickResult = new TestResult
                     {
                         Size = size,
                         Method = "Быстрая сортировка (Quick Sort)",
                         Comparisons = SortingStats.Comparisons,
                         Permutations = SortingStats.Permutations,
                         TimeMs = sw.ElapsedMilliseconds
-                    });
+                    };
+                    _results.Add(quickResult);
+
+                    if (quickResult.TimeMs > 0)
+                    {
+                        totalSpeedRatio += (double)bubbleResult.TimeMs / quickResult.TimeMs;
+                    }
+                    totalComparisonsRatio += (double)bubbleResult.Comparisons / quickResult.Comparisons;
+                    totalPermutationsRatio += (double)bubbleResult.Permutations / quickResult.Permutations;
+                }
+
+                double avgSpeedRatio = totalSpeedRatio / testCount;
+                double avgComparisonsRatio = totalComparisonsRatio / testCount;
+                double avgPermutationsRatio = totalPermutationsRatio / testCount;
+
+                var comparisonInfo = new StringBuilder();
+                comparisonInfo.AppendLine("Средние значения");
+                comparisonInfo.AppendLine();
+                comparisonInfo.AppendLine($"Быстрая сортировка быстрее в {avgSpeedRatio:F2} раз(а)");
+                comparisonInfo.AppendLine($"Сравнений: QuickSort эффективнее в {avgComparisonsRatio:F2} раз(а)");
+                comparisonInfo.AppendLine($"Перестановок: QuickSort эффективнее в {avgPermutationsRatio:F2} раз(а)");
+                comparisonInfo.AppendLine();
+
+                if (txtComparisonInfo != null)
+                {
+                    txtComparisonInfo.Text = comparisonInfo.ToString();
                 }
             }
             catch (Exception ex)
@@ -76,6 +111,10 @@ namespace SortingApp
         private void btnClearResults_Click(object sender, RoutedEventArgs e)
         {
             _results.Clear();
+            if (txtComparisonInfo != null)
+            {
+                txtComparisonInfo.Text = "";
+            }
         }
     }
 

@@ -15,7 +15,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Text="Сортировка данных" FontSize="20" FontWeight="Bold" 
+        <TextBlock Grid.Row="0" Text="Сортировка данных" FontSize="20"
                    HorizontalAlignment="Center" Margin="0,0,0,10"/>
 
         <Border Grid.Row="1" BorderThickness="1" Padding="10" Margin="0,0,0,10">
@@ -30,7 +30,10 @@
 
                 <WrapPanel Margin="0,0,0,10">
                     <TextBlock Text="Размер массива:" VerticalAlignment="Center" Margin="5"/>
-                    <TextBox x:Name="txtArraySize" Text="10" Width="60" Margin="5"/>
+                    <Slider x:Name="sliderArraySize" Minimum="1" Maximum="150" Value="10" 
+                            Width="200" Margin="5" TickPlacement="BottomRight" TickFrequency="1" 
+                            IsSnapToTickEnabled="False" SmallChange="1" LargeChange="10"/>
+                    <TextBlock x:Name="txtArraySizeValue" Text="10" VerticalAlignment="Center" Margin="5" Width="30"/>
                     <TextBlock Text="Метод сортировки:" VerticalAlignment="Center" Margin="15,5,5,5"/>
                     <RadioButton x:Name="rbBubbleSort" Content="Метод обмена (Bubble Sort)" GroupName="SortMethod" 
                                  IsChecked="True" Margin="5"/>
@@ -61,11 +64,5 @@
                              VerticalScrollBarVisibility="Auto"/>
             </ScrollViewer>
         </GroupBox>
-        
-        <StatusBar Grid.Row="4">
-            <StatusBarItem>
-                <TextBlock x:Name="txtStatus" Text="Готов"/>
-            </StatusBarItem>
-        </StatusBar>
     </Grid>
 </Window>

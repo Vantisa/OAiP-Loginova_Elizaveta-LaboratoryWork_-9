@@ -34,9 +34,9 @@ namespace SortingApp
             new QuickSort().Algorithm(quickArray);
             sw.Stop();
             results += $"Быстрая сортировка:\n";
-            results += $"  Сравнений: {SortingStats.Comparisons}\n";
-            results += $"  Перестановок: {SortingStats.Permutations}\n";
-            results += $"  Время: {sw.ElapsedMilliseconds} мс\n\n";
+            results += $"Сравнений: {SortingStats.Comparisons}\n";
+            results += $"Перестановок: {SortingStats.Permutations}\n";
+            results += $"Время: {sw.ElapsedMilliseconds} мс\n\n";
 
             File.WriteAllText($"test_result_{size}.txt", results);
         }
